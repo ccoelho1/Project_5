@@ -1,0 +1,48 @@
+
+body {
+    background-color: #EEEEEE;
+    font-family: sans-serif, Arial, Helvetica, sans-serif;
+}
+ 
+html, body, #map-canvas {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+        .controls {
+            margin-top: 25px;
+            border: 1px solid transparent;
+            border-radius: 2px 0 0 2px;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            height: 32px;
+            outline: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        #search-input {
+            background-color: #fff;
+            font-family: Roboto;
+            font-size: 15px;
+            font-weight: 300;
+            margin-left: 10px;
+            padding: 0 11px 0 13px;
+            width: 230px;
+        }
+        #location-list {
+            background-color: #EEEEEE;
+            opacity: 0.7;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            margin-bottom: 15px;
+            padding-top: 15px;
+            width: 230px;
+            z-index: 1;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .all-list {
+            margin-top: 30px;
+            font-weight: bolder;
+            padding-left: 15px;
+        }
