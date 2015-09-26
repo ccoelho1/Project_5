@@ -19,4 +19,4 @@ a search bar and a list of attractions once you click on the marker a pop up box
 4. http://www.w3schools.com/
 5. https://www.mediawiki.org/wiki/API:Main_page
 6. https://developers.google.com/maps/
-7.http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
+7. http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
