@@ -3,14 +3,13 @@
 Please visit my GitHub page "https://github.com/ccoelho1/Project_5.git"
 
 Please open index.html on google Chrome to launch the map. 
+	-Click on the markers to get a pop window that directs you to more information
+	-The Link on the pop window is for Wikepedia and that will provide you with numerous facts about the location
+	-Map zooms in and out
+	-Use the search bar to search for particular name or just click on the list on the bottom right to take you right to that location
+	-If you put partial entry on the search bar you will get the list of locations with that name.
 
 This map uses Google Maps API to display the Newark, NJ area.
-
-The markers display attractions in the area. 
-
-Functionality of the page includes: 
-a search bar and a list of attractions once you click on the marker a pop up box will open and provide you a wiki link with more information.
-
 
 ####References and Sources:
 1. http://knockoutjs.com/
