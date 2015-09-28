@@ -6,17 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <title>Neighborhood Map</title>
+  
 </head>
+
 <body>
     <input id="search-input" class="controls" data-bind="textInput: criteria"
         placeholder="Search" />
     <div id="location-list">
-      <span class="all-list"><a href="#" data-bind="click: makeAllVisible">SHOW ALL LOCATIONS</a></span>
-        <ul data-bind="foreach: locationList">       
+      <div class="all-list"><a href="#" data-bind="click: makeAllVisible">SHOW ALL LOCATIONS</a> </div>
+      <div data-bind="foreach: locationList">
+        <ul data-bind="if: list">
             <li class="location-item"><a href="#" data-bind="text: name, click: $parent.selectItemFromList"></a></li>
         </ul>
+     </div>
     </div>
+
     <div id="map-canvas"></div>
+      
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjD-ZyPCtFZorbjifhCJcFLt4ac6YpMxU">
     </script>  
     <!-- JavaScript -->
