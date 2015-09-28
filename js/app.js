@@ -84,7 +84,8 @@ var LocationData = [
 ];
 
 var Location = function(data) {
-    'use strict'
+   'use strict';
+    var self = this;
     this.name = data.name;
     this.lat = data.lat;
     this.lng = data.lng;
@@ -182,7 +183,9 @@ var ViewModel = function() {
                     self.infoWindow.open(self.map, thisMarker);
                     lookupWikiInfo(self.locationList()[i]);
                     self.map.setCenter(thisMarker.getPosition());
-
+                    //Added this to change color of markers once clicked
+                    changeMarkerColor();
+                    thisMarker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
                 };
             })
             (self.locationList()[i].marker, i, content));
@@ -200,6 +203,13 @@ var ViewModel = function() {
                     item.marker.setMap(null);
                 }
                 item.list(newVisibility);
+        });
+    }
+
+     //Added this to change color of markers once clicked
+    function changeMarkerColor() {
+        ko.utils.arrayForEach(self.locationList(), function(item) {
+            item.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
         });
     }
 
@@ -235,13 +245,12 @@ var ViewModel = function() {
                 // Warning if no wiki page was found
                 if (articleList.length === 0) {
                     wikiListUl.append('<li class="wiki-item">No related Wikipedia links were found.</li>');
-                }
-
-                // Prevent timeout if successful
+                    }
+                    // Prevent timeout if successful
                 clearTimeout(wikiRequestTimeout);
                 self.infoWindow.open(self.map);
             }
-        };
+        }
         // ajax request
         $.ajax(ajaxSettings)
         .error(function() {
