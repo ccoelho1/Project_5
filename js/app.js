@@ -1,5 +1,8 @@
+// Setup the map and components
+    function initialize() {
+        'use strict';
+    }
 //favorite locations of my neighborhood
-
 var LocationData = [
     {
         name : 'Newark City Hall',
@@ -121,15 +124,12 @@ var ViewModel = function() {
     // Create observable for the map and infowindow
     self.map = ko.observable();
     self.infoWindow = ko.observable();
-
-    // Setup the map and components
-    function initialize() {
     //Initialize Google Map
-        var myLatlng = new google.maps.LatLng(40.735657, -74.1723667);
+        var myLatlng = new google.maps.LatLng(40.735657, -74.1723667);             
         var mapOptions = {
             zoom: 15,
-            center : myLatlng,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
+            center : myLatlng
+            //mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         self.map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
         self.infoWindow = new google.maps.InfoWindow();
@@ -145,21 +145,17 @@ var ViewModel = function() {
         // Resize and re-center map
         google.maps.event.addDomListener(window, 'resize', function() {
             var center = self.map.getCenter();
-            google.maps.event.trigger(self.map, 'resize');
-            self.map.setCenter(center);
-        });
-
-        // Resize and adjust the infowindow
+           google.maps.event.trigger(self.map, 'resize');
+          self.map.setCenter(center);
+       });
+       // Resize and adjust the infowindow
         google.maps.event.addDomListener(window, 'resize', function() {
             self.infoWindow.open(self.map);
         });
-
         // Detect infowindow closure
         google.maps.event.addListener(self.infoWindow,'closeclick',function(){
             $('#location-list').removeClass('location-list-hide');
         });
-    }
-
 
     // Create infowindow for elements
     function loadElements() {
@@ -218,13 +214,20 @@ var ViewModel = function() {
         var container = '<h2>'+listItem.name+'</h2>';
         container += '<h4>Wikipedia Links</h4>';
         container += '<ul id="wiki-list-'+listItem.id+'" class="wiki-list"></ul>';
+
         // return the string
         return container;
     }
-
     // wiki links
     function lookupWikiInfo(listItem) {
         var wikiListUl = $('#wiki-list-'+listItem.id);
+
+        // Added this to make the error wor timeout for errors with JSONP callback to wiki
+        var wikiRequestTimeout = setTimeout(function(){
+            wikiListUl.append('<li>Failed to load Wikipedia links!</li>');
+        // 8 second timeout
+        }, 8000);
+
         // JSONP request with callback
         var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + listItem.description + '&format=json&callback=wikiCallback';
         var ajaxSettings = {
@@ -233,7 +236,7 @@ var ViewModel = function() {
             success: function(response) {
               var articleList = response[1];
                 for (var i = 0; i < articleList.length; i++) {
-                    if (i == 4) {
+                    if (i === 4) {
                         clearTimeout(wikiRequestTimeout);
                         return false;
                     }
@@ -250,14 +253,13 @@ var ViewModel = function() {
                 clearTimeout(wikiRequestTimeout);
                 self.infoWindow.open(self.map);
             }
-        }
+        };
         // ajax request
         $.ajax(ajaxSettings)
         .error(function() {
             wikiListUl.append('<li>Wikipedia Links Could not Load!</li>');
         });
     }
-
         //shows only the selected marker
         self.selectItemFromList = function(item) {
         changeVisibility(false);
@@ -280,5 +282,6 @@ var ViewModel = function() {
         $('#map-canvas').append('<strong><br>Google Map CONNECTION FAILED. Check your internet connection.<br></strong>');
     }
 };
+
 //Bind ViewModel
 ko.applyBindings(new ViewModel());
