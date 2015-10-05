@@ -1,4 +1,4 @@
-###Neighborhood Map: Project 5  ccoelho1 9/28/2015
+###Neighborhood Map: Project 5  ccoelho1 10/5/2015
 
 Please visit my GitHub page "https://github.com/ccoelho1/Project_5.git"
 
@@ -19,3 +19,4 @@ This map uses Google Maps API to display the Newark, NJ area.
 5. https://www.mediawiki.org/wiki/API:Main_page
 6. https://developers.google.com/maps/
 7. http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
+8. http://stackoverflow.com/questions/16340529/loading-google-maps-asynchronously
