@@ -1,93 +1,108 @@
 // Setup the map and components
-    function initialize() {
-        'use strict';
+function initialize() {
+    'use strict';
+}
+//asynchronous function added to call google maps asynchronously since the sample example was not pulling and proving the following error 
+//"Failed to execute 'write' on 'Document': It isn't possible to write into a document from an asynchronously-loaded external script unless it is explicitly opened"
+//reference http://stackoverflow.com/questions/16340529/loading-google-maps-asynchronously
+
+var googleMapsAsyncLoaded = false;
+var googleMapsAsyncCallback = function() {};
+
+function googleMapsLoadAsync(callback) {
+    if (typeof callback !== 'undefined') {
+        googleMapsAsyncCallback = callback;
     }
+    if (!googleMapsAsyncLoaded) {
+        $.getScript('https://maps.googleapis.com/maps/api/js?sensor=false&async=2&callback=googleMapsAsyncLoadedFunction');
+    } else {
+        googleMapsAsyncLoadedFunction();
+    }
+}
+
+function googleMapsAsyncLoadedFunction() {
+    googleMapsAsyncLoaded = true;
+    if (googleMapsAsyncCallback && typeof(googleMapsAsyncCallback) === "function") {
+        googleMapsAsyncCallback();
+    }
+    googleMapsAsyncCallback = function() {};
+}
+
 //favorite locations of my neighborhood
-var LocationData = [
-    {
-        name : 'Newark City Hall',
-        lat : 40.7320459,
-        lng :  -74.1732778,
-        id : 1,
-        list : true,
-        description : 'Newark City Hall'
-    },
-    {
-        name : 'New Jersey Performing Arts Center',
-        lat : 40.7403235,
-        lng : -74.1662554,
-        id : 2,
-        list : true,
-        description : 'New Jersey Performing Arts Center'
-    },
-    {
-        name : 'Newark Penn Station',
-        lat : 40.7340,
-        lng : -74.1645,
-        id : 3,
-        list : true,
-        description : 'Newark Penn Station'
-    },
-    {
-        name : 'Branch Brook Park',
-        lat : 40.7703786,
-        lng : -74.1760557,
-        id : 4,
-        list : true,
-        description : 'Branch Brook Park'
-    },
-    {
-        name : 'Cathedral Basilica of the Sacred Heart',
-        lat : 40.735657,
-        lng : -74.172363,
-        id : 5,
-        list : true,
-        description : 'Cathedral Basilica of the Sacred Heart'
-    },
-    {
-        name : 'Newark Public Schools',
-        lat : 40.737868,
-        lng : -74.171044,
-        id : 6,
-        list : true,
-        description : 'Newark Public Schools'
-    },
-    {
-        name : 'Newark Airport',
-        lat : 40.6925,
-        lng : -74.1686,
-        id : 7,
-        list : true,
-        description : 'Newark Airport'
-    },
-    {
-        name : 'Rutgers University–Newark',
-        lat : 40.7410,
-        lng : -74.1740,
-        id : 8,
-        list : true,
-        description : 'Rutgers University–Newark'
-    },
-    {
-        name :'NJIT',
-        lat : 40.7420,
-        lng : -74.1790,
-        id : 9,
-        list : true,
-        description : 'NJIT'
-    },
-    {
-        name : 'Newark Museum',
-        lat : 40.744290,
-        lng : -74.1709556,
-        id : 10,
-        list : true,
-        description : 'Newark Museum'
-    }
-];
+var LocationData = [{
+    name: 'Newark City Hall',
+    lat: 40.7320459,
+    lng: -74.1732778,
+    id: 1,
+    list: true,
+    description: 'Newark City Hall'
+}, {
+    name: 'New Jersey Performing Arts Center',
+    lat: 40.7403235,
+    lng: -74.1662554,
+    id: 2,
+    list: true,
+    description: 'New Jersey Performing Arts Center'
+}, {
+    name: 'Newark Penn Station',
+    lat: 40.7340,
+    lng: -74.1645,
+    id: 3,
+    list: true,
+    description: 'Newark Penn Station'
+}, {
+    name: 'Branch Brook Park',
+    lat: 40.7703786,
+    lng: -74.1760557,
+    id: 4,
+    list: true,
+    description: 'Branch Brook Park'
+}, {
+    name: 'Cathedral Basilica of the Sacred Heart',
+    lat: 40.735657,
+    lng: -74.172363,
+    id: 5,
+    list: true,
+    description: 'Cathedral Basilica of the Sacred Heart'
+}, {
+    name: 'Newark Public Schools',
+    lat: 40.737868,
+    lng: -74.171044,
+    id: 6,
+    list: true,
+    description: 'Newark Public Schools'
+}, {
+    name: 'Newark Airport',
+    lat: 40.6925,
+    lng: -74.1686,
+    id: 7,
+    list: true,
+    description: 'Newark Airport'
+}, {
+    name: 'Rutgers University–Newark',
+    lat: 40.7410,
+    lng: -74.1740,
+    id: 8,
+    list: true,
+    description: 'Rutgers University–Newark'
+}, {
+    name: 'NJIT',
+    lat: 40.7420,
+    lng: -74.1790,
+    id: 9,
+    list: true,
+    description: 'NJIT'
+}, {
+    name: 'Newark Museum',
+    lat: 40.744290,
+    lng: -74.1709556,
+    id: 10,
+    list: true,
+    description: 'Newark Museum'
+}];
 
 var Location = function(data) {
-   'use strict';
+    'use strict';
     var self = this;
     this.name = data.name;
     this.lat = data.lat;
@@ -102,65 +117,64 @@ var ViewModel = function() {
     //observable array
     self.locationList = ko.observableArray([]);
     LocationData.forEach(function(item) {
-        self.locationList.push( new Location(item) );
+        self.locationList.push(new Location(item));
     });
 
     self.criteria = ko.observable();
     //Search function
-    self.criteria.subscribe( function(criteria) {
+    self.criteria.subscribe(function(criteria) {
         // show location for matching criteria
         ko.utils.arrayForEach(self.locationList(), function(item) {
             if (item.name.toLowerCase().match(criteria.toLowerCase())) {
                 item.marker.setMap(self.map);
                 item.list(true);
-            }
-            else {
+            } else {
                 item.marker.setMap(null);
                 item.list(false);
             }
         });
-      });
+    });
 
     // Create observable for the map and infowindow
     self.map = ko.observable();
     self.infoWindow = ko.observable();
     //Initialize Google Map
-        var myLatlng = new google.maps.LatLng(40.735657, -74.1723667);             
-        var mapOptions = {
-            zoom: 15,
-            center : myLatlng
+    var myLatlng = new google.maps.LatLng(40.735657, -74.1723667);
+    var mapOptions = {
+        zoom: 15,
+        center: myLatlng
             //mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        self.map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-        self.infoWindow = new google.maps.InfoWindow();
+    };
+    self.map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    self.infoWindow = new google.maps.InfoWindow();
 
-        loadElements();
+    loadElements();
 
-        // Search function position
-        var input = document.getElementById('search-input');
-        var types = document.getElementById('type-selector');
-        self.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
-        self.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(types);
+    // Search function position
+    var input = document.getElementById('search-input');
+    var types = document.getElementById('type-selector');
+    self.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+    self.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(types);
 
-        // Resize and re-center map
-        google.maps.event.addDomListener(window, 'resize', function() {
-            var center = self.map.getCenter();
-           google.maps.event.trigger(self.map, 'resize');
-          self.map.setCenter(center);
-       });
-       // Resize and adjust the infowindow
-        google.maps.event.addDomListener(window, 'resize', function() {
-            self.infoWindow.open(self.map);
-        });
-        // Detect infowindow closure
-        google.maps.event.addListener(self.infoWindow,'closeclick',function(){
-            $('#location-list').removeClass('location-list-hide');
-        });
+    // Resize and re-center map
+    google.maps.event.addDomListener(window, 'resize', function() {
+        var center = self.map.getCenter();
+        google.maps.event.trigger(self.map, 'resize');
+        self.map.setCenter(center);
+    });
+    // Resize and adjust the infowindow
+    google.maps.event.addDomListener(window, 'resize', function() {
+        self.infoWindow.open(self.map);
+    });
+    // Detect infowindow closure
+    google.maps.event.addListener(self.infoWindow, 'closeclick', function() {
+        $('#location-list').removeClass('location-list-hide');
+    });
 
     // Create infowindow for elements
     function loadElements() {
-    // initial marker
-    for (var i = 0; i < self.locationList().length; i++) {
+        // initial marker
+        for (var i = 0; i < self.locationList().length; i++) {
             var content = markerContent(self.locationList()[i]);
             // Use latLng on locations
             var position = new google.maps.LatLng(self.locationList()[i].lat, self.locationList()[i].lng);
@@ -173,36 +187,35 @@ var ViewModel = function() {
 
             // Additional information in the popup window
             google.maps.event.addListener(self.locationList()[i].marker, 'click', (function(thisMarker, i, content) {
-                return function() {
-                    // Build infowindow
-                    self.infoWindow.setContent(content);
-                    self.infoWindow.open(self.map, thisMarker);
-                    lookupWikiInfo(self.locationList()[i]);
-                    self.map.setCenter(thisMarker.getPosition());
-                    //Added this to change color of markers once clicked
-                    changeMarkerColor();
-                    thisMarker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
-                };
-            })
-            (self.locationList()[i].marker, i, content));
+                    return function() {
+                        // Build infowindow
+                        self.infoWindow.setContent(content);
+                        self.infoWindow.open(self.map, thisMarker);
+                        lookupWikiInfo(self.locationList()[i]);
+                        self.map.setCenter(thisMarker.getPosition());
+                        //Added this to change color of markers once clicked
+                        changeMarkerColor();
+                        thisMarker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+                    };
+                })
+                (self.locationList()[i].marker, i, content));
         }
     }
 
     // Change visibility of all markers
     function changeVisibility(newVisibility) {
         ko.utils.arrayForEach(self.locationList(), function(item) {
-                self.criteria('');
-                if (newVisibility) {
-                    item.marker.setMap(self.map);
-                }
-                else {
-                    item.marker.setMap(null);
-                }
-                item.list(newVisibility);
+            self.criteria('');
+            if (newVisibility) {
+                item.marker.setMap(self.map);
+            } else {
+                item.marker.setMap(null);
+            }
+            item.list(newVisibility);
         });
     }
 
-     //Added this to change color of markers once clicked
+    //Added this to change color of markers once clicked
     function changeMarkerColor() {
         ko.utils.arrayForEach(self.locationList(), function(item) {
             item.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
@@ -211,21 +224,21 @@ var ViewModel = function() {
 
     // marker info
     function markerContent(listItem) {
-        var container = '<h2>'+listItem.name+'</h2>';
+        var container = '<h2>' + listItem.name + '</h2>';
         container += '<h4>Wikipedia Links</h4>';
-        container += '<ul id="wiki-list-'+listItem.id+'" class="wiki-list"></ul>';
+        container += '<ul id="wiki-list-' + listItem.id + '" class="wiki-list"></ul>';
 
         // return the string
         return container;
     }
     // wiki links
     function lookupWikiInfo(listItem) {
-        var wikiListUl = $('#wiki-list-'+listItem.id);
+        var wikiListUl = $('#wiki-list-' + listItem.id);
 
         // Added this to make the error wor timeout for errors with JSONP callback to wiki
-        var wikiRequestTimeout = setTimeout(function(){
+        var wikiRequestTimeout = setTimeout(function() {
             wikiListUl.append('<li>Failed to load Wikipedia links!</li>');
-        // 8 second timeout
+            // 8 second timeou
         }, 8000);
 
         // JSONP request with callback
@@ -234,7 +247,7 @@ var ViewModel = function() {
             url: wikiURL,
             dataType: 'jsonp',
             success: function(response) {
-              var articleList = response[1];
+                var articleList = response[1];
                 for (var i = 0; i < articleList.length; i++) {
                     if (i === 4) {
                         clearTimeout(wikiRequestTimeout);
@@ -248,20 +261,20 @@ var ViewModel = function() {
                 // Warning if no wiki page was found
                 if (articleList.length === 0) {
                     wikiListUl.append('<li class="wiki-item">No related Wikipedia links were found.</li>');
-                    }
-                    // Prevent timeout if successful
+                }
+                // Prevent timeout if successful
                 clearTimeout(wikiRequestTimeout);
                 self.infoWindow.open(self.map);
             }
         };
         // ajax request
         $.ajax(ajaxSettings)
-        .error(function() {
-            wikiListUl.append('<li>Wikipedia Links Could not Load!</li>');
-        });
+            .error(function() {
+                wikiListUl.append('<li>Wikipedia Links Could not Load!</li>');
+            });
     }
-        //shows only the selected marker
-        self.selectItemFromList = function(item) {
+    //shows only the selected marker
+    self.selectItemFromList = function(item) {
         changeVisibility(false);
         item.marker.setMap(self.map);
         item.list(true);
@@ -277,7 +290,7 @@ var ViewModel = function() {
     // initialize ViewModel
     if (typeof google !== 'undefined') {
         google.maps.event.addDomListener(window, 'load', initialize);
-    }
+    } 
     else {
         $('#map-canvas').append('<strong><br>Google Map CONNECTION FAILED. Check your internet connection.<br></strong>');
     }

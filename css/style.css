@@ -1,6 +1,8 @@
 body {
     background-color: #EEEEEE;
     font-family: sans-serif, Arial, Helvetica, sans-serif;
+    line-height: 1;
+    font-size: 8px;
 }
 html,
 body,
@@ -23,10 +25,10 @@ body,
     background-color: #fff;
     font-family: Roboto;
     font-size: 15px;
-    font-weight: 300;
+    font-weight: 200;
     margin-left: 10px;
     padding: 0 11px 0 13px;
-    width: 300px;
+    width: 230px;
 }
 #location-list {
     background-color: #EEEEEE;
@@ -36,15 +38,26 @@ body,
     right: 0;
     margin-bottom: 15px;
     padding-top: 10px;
-    width: 300px;
+    width: 230px;
     z-index: 1;
     font-size: 15px;
     font-weight: bold;
-    line-height: 80%;
-   
+    line-height: 90%;
 }
 .all-list {
     margin-top: 10px;
     font-weight: bolder;
     padding-left: 10px;
+}
+
+@media all and (min-width: 1024px) and (max-width: 1280px) {
+}
+
+@media all and (min-width: 768px) and (max-width: 1024px) {
+}
+
+@media all and (min-width: 480px) and (max-width: 768px) { 
+}
+
+@media all and (max-width: 480px) {
 }
